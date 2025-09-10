@@ -1,0 +1,26 @@
+- name: Deploy Apache website to EKS
+  hosts: localhost
+  connection: local
+  tasks:
+
+    - name: Ensure AWS CLI is configured for EKS
+      command: aws eks update-kubeconfig --name Pulkit-eks --region ap-south-1
+
+    - name: Deploy Apache Deployment
+      kubernetes.core.k8s:
+        state: present
+        namespace: default
+        src: k8s/deployment.yaml
+
+    - name: Deploy Apache Service
+      kubernetes.core.k8s:
+        state: present
+        namespace: default
+        src: k8s/service.yaml
+
+    - name: Verify deployment pods
+      command: kubectl get pods -o wide
+      register: pod_status
+
+    - debug:
+        var: pod_status.stdout_lines
