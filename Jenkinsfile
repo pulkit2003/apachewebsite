@@ -28,6 +28,17 @@ pipeline {
             }
         }
 
+        stage('Prepare Kubernetes Manifests') {
+            steps {
+                sh '''
+                    echo "Copying Kubernetes manifests into Jenkins workspace..."
+                    mkdir -p k8s
+                    cp /home/ubuntu/k8s/service.yaml k8s/service.yaml
+                    cp /home/ubuntu/k8s/deployment.yaml k8s/deployment.yaml
+                '''
+            }
+        }
+
         stage('Deploy to EKS via Ansible') {
             steps {
                 withCredentials([
