@@ -34,13 +34,8 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    echo "Activating Ansible environment..."
-                    . /home/ubuntu/ansible-env/bin/activate
-
                     echo "Running Ansible playbook for Kubernetes deployment..."
                     ansible-playbook /home/ubuntu/deploy-k8s.yaml
-
-                    deactivate
                     '''
                 }
             }
