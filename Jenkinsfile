@@ -18,14 +18,13 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 script {
-                    // Ensure DockerHub credentials are configured in Jenkins with ID 'docker'
                     withDockerRegistry(credentialsId: 'docker', url: '') {
-                        sh """
+                        sh '''
                         echo "Building Docker image..."
                         docker build -t $DOCKER_IMAGE .
                         echo "Pushing Docker image to DockerHub..."
                         docker push $DOCKER_IMAGE
-                        """
+                        '''
                     }
                 }
             }
@@ -34,7 +33,7 @@ pipeline {
         stage('Deploy to EKS via Ansible') {
             steps {
                 script {
-                    sh """
+                    sh '''
                     echo "Activating Ansible environment..."
                     . /home/ubuntu/ansible-env/bin/activate
 
@@ -42,20 +41,20 @@ pipeline {
                     ansible-playbook /home/ubuntu/deploy-k8s.yaml
 
                     deactivate
-                    """
+                    '''
                 }
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                sh """
+                sh '''
                 echo "Checking Kubernetes pods..."
                 kubectl get pods -o wide
 
                 echo "Checking Kubernetes services..."
                 kubectl get svc
-                """
+                '''
             }
         }
     }
