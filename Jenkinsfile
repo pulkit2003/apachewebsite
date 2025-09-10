@@ -18,6 +18,7 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 script {
+                    // Ensure DockerHub credentials are configured in Jenkins with ID 'docker'
                     withDockerRegistry(credentialsId: 'docker', url: '') {
                         sh '''
                         echo "Building Docker image..."
@@ -35,7 +36,7 @@ pipeline {
                 script {
                     sh '''
                     echo "Running Ansible playbook for Kubernetes deployment..."
-                    ansible-playbook /home/ubuntu/deploy-k8s.yaml
+                    ansible-playbook deploy-k8s.yaml
                     '''
                 }
             }
