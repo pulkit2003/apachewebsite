@@ -5,6 +5,10 @@ pipeline {
         DOCKER_IMAGE = "pulkitm2003/apachewebsite:latest"
         EKS_CLUSTER_NAME = "Pulkit-eks"
         AWS_REGION = "ap-south-1"
+
+        // Manually set your AWS credentials here (use Jenkins credentials binding)
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key')   // Jenkins secret text credential ID
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key') // Jenkins secret text credential ID
     }
 
     stages {
@@ -18,7 +22,6 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 script {
-                    // Ensure DockerHub credentials are configured in Jenkins with ID 'docker'
                     withDockerRegistry(credentialsId: 'docker', url: '') {
                         sh """
                         echo "Building Docker image..."
@@ -32,14 +35,14 @@ pipeline {
         }
 
         stage('Deploy to EKS via Ansible') {
-            environment {
-                // Inject AWS credentials from Jenkins
-                AWS_ACCESS_KEY_ID     = credentials('aws-creds-id-access-key')
-                AWS_SECRET_ACCESS_KEY = credentials('aws-creds-id-secret-key')
-            }
             steps {
                 script {
                     sh """
+                    echo "Exporting AWS credentials..."
+                    export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                    export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+                    export AWS_DEFAULT_REGION=${AWS_REGION}
+
                     echo "Running Ansible playbook for Kubernetes deployment..."
                     ansible-playbook deploy-k8s.yaml
                     """
