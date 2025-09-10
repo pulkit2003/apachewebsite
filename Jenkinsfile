@@ -20,37 +20,42 @@ pipeline {
                 script {
                     // Ensure DockerHub credentials are configured in Jenkins with ID 'docker'
                     withDockerRegistry(credentialsId: 'docker', url: '') {
-                        sh '''
+                        sh """
                         echo "Building Docker image..."
                         docker build -t $DOCKER_IMAGE .
                         echo "Pushing Docker image to DockerHub..."
                         docker push $DOCKER_IMAGE
-                        '''
+                        """
                     }
                 }
             }
         }
 
         stage('Deploy to EKS via Ansible') {
+            environment {
+                // Inject AWS credentials from Jenkins
+                AWS_ACCESS_KEY_ID     = credentials('aws-creds-id-access-key')
+                AWS_SECRET_ACCESS_KEY = credentials('aws-creds-id-secret-key')
+            }
             steps {
                 script {
-                    sh '''
+                    sh """
                     echo "Running Ansible playbook for Kubernetes deployment..."
                     ansible-playbook deploy-k8s.yaml
-                    '''
+                    """
                 }
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                sh '''
+                sh """
                 echo "Checking Kubernetes pods..."
                 kubectl get pods -o wide
 
                 echo "Checking Kubernetes services..."
                 kubectl get svc
-                '''
+                """
             }
         }
     }
