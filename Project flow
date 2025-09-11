@@ -1,5 +1,4 @@
 1.	Create a Master EC2
-
 a) Give name to EC2 and select AMI as Ubuntu 24.04LTS
 
 b) Select instance type as t2.large ( since this is master EC2 it will require large size )
@@ -24,21 +23,209 @@ e) Configure Storage as 1x30 GiB gp3
 ----------------------------------------------------------------------------------------------
 
 2.	Create IAM User
-
 a) Open IAM in AWS console and click on create user
 
 b) Give name then 
-	Check Provide user access -> Select I want to create an IAM user -> Click Custom Password and enter Password -> Unckeck User must create a new password….. option -> Click next 
+Check Provide user access -> Select I want to create an IAM user -> 
+Click Custom Password and enter Password -> Unckeck User must create a new password….. option -> 
+Click next 
 Skip everything -> Click next -> Click Create user
 
+c) Move back to user list and select your user -> click Add Permissions -> 
+Click on Attach Policies Directly
+policies to attach
+
+AmazonEC2FullAccess
+IAMFullAccess
+AmazonEKS_CNI_Policy
+AmazonEKSClusterPolicy
+AmazonEKSWorkerNodePolicy
+AWSCloudFormationFullAccess
+
+Inline policy
+Click jSON and replace the editor code with this -> Click next
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "eks:*",
+            "Resource": "*"
+        }
+    ]
+}
+------------------------------------------------------------------------------------------
 
 3.	Installations
+clone this repo and install from installations folder
+
+-------------------------------------------------------------------------------------------
+
 4.	Create EKS Cluster
+from installations folder
+
+------------------------------------------------------------------------------------------
+
 5.	Establishing Jenkins Plugins
+a) Install all 13 Plugins listed below and after that restart Jenkins
+1.	Pipeline: Stage View
+2.	Docker 
+3.	Docker Commons 
+4.	Docker Pipeline 
+5.	Docker API 
+6.	docker-build-step 
+7.	Kubernetes 
+8.	Kubernetes Client API
+9.	Kubernetes Credentials
+10.	Kubernetes CLI
+11.	Config File Provider 
+12.	Eclipse Temurin Installer (for Java)
+13.	Ansible 
+
+b) Go to Manage jenikns -> Credentials (Under security) ->click global -> Add credentials
+=======================================================================
+User name = your docker username
+Password = your docker hub password
+Id = docker
+Description = docker
+========================================================================
+Add global credentials for ansible too
+Kind : SSH Username with private key
+Scope : Global
+ID : ansible-ssh
+Username : ubuntu
+Click on Private key enter directly and enter the private key used to make master ec2
+=========================================================================
+Add Credentials for AWS access key
+Kind : Secret key
+Scope : Global
+Secret : <add_accesskey>
+ID : aws-access-key
+==========================================================================
+Add Credentials for AWS Secret access key
+Kind : Secret key
+Scope : Global
+Secret : <add_Secret_accesskey>
+ID : aws-secret-key
+=========================================================================
+
+c) go to -> Manage Jenkins -> Tools (under system configuration) -> 
+click on Add jdk
+name: jdk17
+select install automatically 
+under installer dropdown
+select “install from adoptium.net” 
+version? : select jdk-17.0.8.1+1 version
+=========================================================================
+add docker 
+name: docker
+select install automatically
+add installer
+Download from docker.com
+=========================================================================
+add ansible
+name: ansible
+leave as it is
+--------------------------------------------------------------------------------------------
+
 6.	Creating Dynamic Inventory
+a)from ansible folder get tags.sh
+
+b) Create Ansible key
+ssh-keygen -t rsa -b 4096 -C "Ansible-Master"
+
+c) Creating Yaml file that will hold IP address of node
+mkdir inventory
+cd inventory
+get aws_ec2.yaml file from ansible folder
+
+----------------------------------------------------------------------------------------------
+
 7.	Connecting Ansible Master – Node
+
+a)
+ # Install venv module if not already present :
+sudo apt install python3-venv -y
+ # Create a virtual environment :
+python3 -m venv ansible-env
+ # Activate it :
+source ansible-env/bin/activate
+ # Install required Python packages :
+pip install boto3 botocore docker
+
+b) creating key
+vi <key_file_name>
+chmod 400 <key_file_name>
+
+c) override permission
+
+vi ansible.cfg
+[defaults]
+inventory = ./inventory/aws_ec2.yaml
+host_key_checking = False
+
+[ssh_connection]
+ssh_args = -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+
+d)linking 
+run copy-public-key.sh from ansible folder
+
+----------------------------------------------------------------------------------------------
+
 8.	Final Deployment Stage 
+
+a) Give Jenkins Permission to ansible environment
+sudo chown -R jenkins:jenkins /home/ubuntu/ansible-env
+sudo chmod -R 755 /home/ubuntu/ansible-env
+sudo chmod 755 /home/ubuntu
+
+verify 
+sudo -u jenkins ls -l /home/ubuntu/ansible-env/bin/activate
+sudo -u jenkins bash -c "source /home/ubuntu/ansible-env/bin/activate && echo Activated"
+
+b) Give docker permission in ansible environment
+sudo usermod -aG docker jenkins
+sudo systemctl restart jenkins
+
+c) Exiting Ansible environment after checking the requirements
+# Inside ansible-env
+source /home/ubuntu/ansible-env/bin/activate
+pip install --upgrade pip
+pip install ansible boto3 botocore kubernetes
+ansible-galaxy collection install kubernetes.core
+deactivate
+
+d) mkdir k8s
+copy the deployment.yaml and service.yaml file
+
+e) deploy-k8s.yaml already there on repo
+
+f) Jenkinsfile already there on repo
+
+---------------------------------------------------------------------------------------------
+
 9.	Jenkins pipeline 
+a) Click New Item Enter name -> Select Pipeline option -> click on OK
+
+Scroll down to Pipeline section 
+Select Defination -> Pipeline script from SCM
+Select SCM as Git
+Under Repositories Add <your_repository_url>
+
+Select Master as Branch
+Script path as Jenkinfile
+Then click Apply and Save
+
+RUN PIPELINE
+
+-------------------------------------------------------------------------------------------------
+
 10.	Confirmation
 
+On master machine 
+kubectl get pods
+kubectl get svc
+
+copy port and open it on sg of Load balancer and nodes then run ip of nodes and load balancers
 
