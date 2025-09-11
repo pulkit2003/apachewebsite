@@ -1,0 +1,44 @@
+1.	Create a Master EC2
+
+a) Give name to EC2 and select AMI as Ubuntu 24.04LTS
+
+b) Select instance type as t2.large ( since this is master EC2 it will require large size )
+
+c) Create a Key pair ( Save it we will use this key pair throughout the project ) 
+Give it name -> key pair type = RSA -> Key file format = .pem -> Create key pair
+
+d) Create Security Group
+Click on Create Security Group
+Give name -> Give description -> Select default VPC -> Give Inbound rules -> Click Create Security Group
+•	SSH, Port =22, Source = Anywhere 0.0.0.0/0
+•	HTTP , Port = 80, Source = Anywhere 0.0.0.0/0
+•	HTTPS, Port = 443, Source = Anywhere 0.0.0.0/0
+•	TCP, Port = 6443, Source = Anywhere 0.0.0.0/0 
+(for Kubernetes)
+•	TCP, Port = 8080, Source = Anywhere 0.0.0.0/0 
+(for Jenkins) 
+Select created security group and make sure Auto-assign public IP is enabled
+
+e) Configure Storage as 1x30 GiB gp3
+	then click on Launch Instance
+----------------------------------------------------------------------------------------------
+
+2.	Create IAM User
+
+a) Open IAM in AWS console and click on create user
+
+b) Give name then 
+	Check Provide user access -> Select I want to create an IAM user -> Click Custom Password and enter Password -> Unckeck User must create a new password….. option -> Click next 
+Skip everything -> Click next -> Click Create user
+
+
+3.	Installations
+4.	Create EKS Cluster
+5.	Establishing Jenkins Plugins
+6.	Creating Dynamic Inventory
+7.	Connecting Ansible Master – Node
+8.	Final Deployment Stage 
+9.	Jenkins pipeline 
+10.	Confirmation
+
+
