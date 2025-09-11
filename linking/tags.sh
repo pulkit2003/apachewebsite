@@ -16,3 +16,6 @@ for id in "${sorted_ids[@]}"; do
     --tags Key=Name,Value="$name"
   ((counter++))
 done
+
+# ansible key generation
+ssh-keygen -t rsa -b 4096 -C "Ansible-Master"
