@@ -19,3 +19,6 @@ sudo apt-get update
 sudo apt-get install jenkins -y
 
 cat /var/lib/jenkins/secrets/initialAdminPassword
+
+java --version
+systemctl status jenkins
