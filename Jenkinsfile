@@ -15,7 +15,7 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 script {
-                    withDockerRegistry([credentialsId: 'dockerhub-cred-id', url: 'https://index.docker.io/v1/']) {
+                    withDockerRegistry([credentialsId: 'docker', url: 'https://index.docker.io/v1/']) {
                         sh '''
                             echo "Building Docker image..."
                             docker build -t $DOCKER_IMAGE .
