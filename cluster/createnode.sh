@@ -1,0 +1,20 @@
+eksctl create nodegroup \
+  --cluster <your_cluster_name> \
+  --region <your_region> \
+  --name node2 \
+  --node-type t3.medium \
+  --nodes 2 \
+  --nodes-min 1 \
+  --nodes-max 2 \
+  --node-volume-size 20 \
+  --ssh-access \
+  --ssh-public-key <your_key_name> \
+  --managed \
+  --asg-access \
+  --external-dns-access \
+  --full-ecr-access \
+  --appmesh-access \
+  --alb-ingress-access \
+--node-private-networking \
+--subnet-ids <your_subnet_id>,<your_subnet_id> \
+  --tags "Environment=dev"
