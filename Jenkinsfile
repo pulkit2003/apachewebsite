@@ -33,8 +33,8 @@ pipeline {
                 sh '''
                     echo "Copying Kubernetes manifests into Jenkins workspace..."
                     mkdir -p k8s
-                    cp /home/ubuntu/k8s/service.yaml k8s/service.yaml
-                    cp /home/ubuntu/k8s/deployment.yaml k8s/deployment.yaml
+                    cp /home/ubuntu/apachewebsite/k8s/service.yaml k8s/service.yaml
+                    cp /home/ubuntu/apachewebsite/k8s/deployment.yaml k8s/deployment.yaml
                 '''
             }
         }
