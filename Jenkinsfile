@@ -52,7 +52,7 @@ pipeline {
                         export AWS_DEFAULT_REGION=ap-south-1
 
                         echo "Activating Ansible virtual environment..."
-                        . /home/ubuntu/ansible-env/bin/activate
+                        . /home/ubuntu/apachewebsite/ansible-env/bin/activate
 
                         echo "Running Ansible playbook for Kubernetes deployment..."
                         ansible-playbook deploy-k8s.yaml
