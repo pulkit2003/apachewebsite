@@ -4,7 +4,7 @@
 PEM_FILE="Pulkit-New-Kp.pem"
 PUB_KEY=$(cat ~/.ssh/id_rsa.pub)
 USER="ec2-user"  # Since nodegroup is Linux 
-INVENTORY_FILE="ansible/aws_ec2.yaml"
+INVENTORY_FILE="./aws_ec2.yaml"
 
 # Extract hostnames/IPs from dynamic inventory
 HOSTS=$(ansible-inventory -i $INVENTORY_FILE --list | jq -r '._meta.hostvars | keys[]')
