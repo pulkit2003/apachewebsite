@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define vars
-PEM_FILE="Pulkit-New-kp.pem"
+PEM_FILE="Pulkit-New-Kp.pem"
 PUB_KEY=$(cat ~/.ssh/id_rsa.pub)
 USER="ec2-user"  # Since nodegroup is Linux 
 INVENTORY_FILE="inventory/aws_ec2.yaml"
