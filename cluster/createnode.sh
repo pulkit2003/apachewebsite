@@ -1,6 +1,6 @@
 eksctl create nodegroup \
-  --cluster <your_cluster_name> \
-  --region <your_region> \
+  --cluster Pulkit-eks \
+  --region ap-south-1 \
   --name node2 \
   --node-type t3.medium \
   --nodes 2 \
@@ -8,13 +8,13 @@ eksctl create nodegroup \
   --nodes-max 2 \
   --node-volume-size 20 \
   --ssh-access \
-  --ssh-public-key <your_key_name> \
+  --ssh-public-key Pulkit-New-Kp \
   --managed \
   --asg-access \
   --external-dns-access \
   --full-ecr-access \
   --appmesh-access \
   --alb-ingress-access \
---node-private-networking \
---subnet-ids <your_subnet_id>,<your_subnet_id> \
+  --node-private-networking \
+  --subnet-ids subnet-00416eb02730bee7f,subnet-054ba5508ec2c9bac \
   --tags "Environment=dev"
