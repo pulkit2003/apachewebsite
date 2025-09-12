@@ -1,4 +1,4 @@
 eksctl utils associate-iam-oidc-provider \
-    --region <your_region_name> \
-    --cluster <your_cluster_name>\
+    --region ap-south-1 \
+    --cluster Pulkit-eks \
     --approve
