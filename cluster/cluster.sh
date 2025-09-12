@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # --- Set your subnets ---
-SUBNETS="<your_subnet_a>,<your_subnet_b>"
+SUBNETS="subnet-00416eb02730bee7f,subnet-054ba5508ec2c9bac"
 
 # --- Create EKS cluster using existing VPC ---
-eksctl create cluster --name <your_cluster_name>\
-                      --region <your_region_name> \
+eksctl create cluster --name Pulkit-eks \
+                      --region ap-south-1 \
                       --version 1.30 \
                       --without-nodegroup \
                       --vpc-private-subnets $SUBNETS \
