@@ -10,7 +10,7 @@ sorted_ids=($(echo "$instance_ids" | tr '\t' '\n' | sort))
 # Rename instances sequentially
 counter=1
 for id in "${sorted_ids[@]}"; do
-  name="<name_you_want>-$(printf "%02d" $counter)"
+  name="PM-Node-$(printf "%02d" $counter)"
   echo "Tagging $id as $name"
   aws ec2 create-tags --resources "$id" \
     --tags Key=Name,Value="$name"
