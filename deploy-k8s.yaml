@@ -16,7 +16,7 @@
       kubernetes.core.k8s:
         state: present
         namespace: default
-        src: k8s/service.yaml
+        src: k8s/services.yaml
 
     - name: Verify deployment pods
       command: kubectl get pods -o wide
